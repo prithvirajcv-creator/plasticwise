@@ -12,11 +12,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // MIDDLEWARE
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173"
-  })
-);
+const cors = require("cors");
+
+app.use(cors({
+    origin: [
+        "https://plasticwise-ki67.netlify.app"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
 app.use(express.json());
 

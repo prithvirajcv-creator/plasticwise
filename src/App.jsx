@@ -10,7 +10,7 @@ import {
 } from "@react-three/drei";
 import "./App.css";
 
-const API_URL = "http://localhost:5000";
+const API_URL = "https://plasticwise.onrender.com";
 
 const portals = [
   { id: "home", label: "HOME", number: "01" },

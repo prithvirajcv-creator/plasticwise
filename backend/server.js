@@ -4,7 +4,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import plasticData from "./plasticData.js";
 import upload, { identifyFromImage } from "./scanner.js";
-import multer from "multer";
 
 dotenv.config();
 
@@ -12,15 +11,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // MIDDLEWARE
-const cors = require("cors");
-
-app.use(cors({
+app.use(
+  cors({
     origin: [
-        "https://plasticwise-ki67.netlify.app"
+      "https://plasticwise-ki67.netlify.app",
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-}));
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 app.use(express.json());
 
@@ -29,7 +28,7 @@ app.get("/", (req, res) => {
   res.json({
     message: "Welcome to PLASTICWISE API",
     status: "Backend is running",
-    version: "1.0.0"
+    version: "1.0.0",
   });
 });
 
@@ -37,7 +36,7 @@ app.get("/", (req, res) => {
 app.get("/api/health", (req, res) => {
   res.json({
     success: true,
-    message: "PLASTICWISE backend is healthy"
+    message: "PLASTICWISE backend is healthy",
   });
 });
 
@@ -46,7 +45,7 @@ app.get("/api/plastics", (req, res) => {
   res.json({
     success: true,
     count: plasticData.length,
-    plastics: plasticData
+    plastics: plasticData,
   });
 });
 
@@ -57,7 +56,7 @@ app.get("/api/plastics/:code", (req, res) => {
   if (!Number.isInteger(code) || code < 1 || code > 7) {
     return res.status(400).json({
       success: false,
-      message: "Please enter a valid resin code from 1 to 7."
+      message: "Please enter a valid resin code from 1 to 7.",
     });
   }
 
@@ -68,13 +67,13 @@ app.get("/api/plastics/:code", (req, res) => {
   if (!plastic) {
     return res.status(404).json({
       success: false,
-      message: "Plastic category not found."
+      message: "Plastic category not found.",
     });
   }
 
   res.json({
     success: true,
-    plastic
+    plastic,
   });
 });
 
@@ -85,7 +84,7 @@ app.post("/api/scan/manual", (req, res) => {
   if (!Number.isInteger(code) || code < 1 || code > 7) {
     return res.status(400).json({
       success: false,
-      message: "Enter a valid resin code between 1 and 7."
+      message: "Enter a valid resin code between 1 and 7.",
     });
   }
 
@@ -97,9 +96,10 @@ app.post("/api/scan/manual", (req, res) => {
     success: true,
     method: "manual",
     message: "Plastic category identified successfully.",
-    plastic
+    plastic,
   });
 });
+
 // IMAGE-BASED IDENTIFICATION USING OCR
 app.post(
   "/api/scan/image",
@@ -109,7 +109,7 @@ app.post(
       if (!req.file) {
         return res.status(400).json({
           success: false,
-          message: "Please upload an image."
+          message: "Please upload an image.",
         });
       }
 
@@ -132,18 +132,19 @@ app.post(
         candidates: result.candidates,
         detectedCode: result.detectedCode,
         requiresConfirmation: true,
-        suggestedPlastic
+        suggestedPlastic,
       });
     } catch (error) {
       next(error);
     }
   }
 );
+
 // HANDLE UNKNOWN ROUTES
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: "API route not found."
+    message: "API route not found.",
   });
 });
 
@@ -153,7 +154,7 @@ app.use((error, req, res, next) => {
 
   res.status(500).json({
     success: false,
-    message: "Something went wrong while processing your request."
+    message: "Something went wrong while processing your request.",
   });
 });
 
@@ -162,7 +163,8 @@ app.listen(PORT, () => {
   console.log("-----------------------------------");
   console.log("       PLASTICWISE BACKEND");
   console.log("-----------------------------------");
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
+  console.log("Health check: GET /api/health");
   console.log("Manual scan: POST /api/scan/manual");
   console.log("-----------------------------------");
 });
